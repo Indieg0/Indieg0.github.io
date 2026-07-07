@@ -1,0 +1,271 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kirill Konovalov — links</title>
+<meta name="description" content="Kirill Konovalov · Full-time engineer / part-time storyteller. Apps, videos, and links in one place." />
+
+<!-- Open Graph / social preview -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Kirill Konovalov" />
+<meta property="og:description" content="Full-time engineer / part-time storyteller. Building apps, sharing the journey." />
+<meta property="og:image" content="assets/avatar.jpg" />
+<link rel="icon" href="assets/avatar.jpg" />
+
+<style>
+  :root {
+    --bg-0: #0a0a0f;
+    --card: rgba(255, 255, 255, 0.045);
+    --card-hover: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.09);
+    --border-hover: rgba(255, 255, 255, 0.2);
+    --text: #f4f4f6;
+    --text-dim: #9a9aa8;
+    --radius: 18px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-0);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .bg-glow {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(600px circle at 20% 0%, rgba(124, 92, 255, 0.18), transparent 55%),
+      radial-gradient(700px circle at 85% 15%, rgba(255, 92, 168, 0.12), transparent 55%),
+      radial-gradient(600px circle at 50% 100%, rgba(46, 196, 182, 0.10), transparent 55%);
+  }
+
+  main {
+    position: relative; z-index: 1;
+    max-width: 600px; margin: 0 auto;
+    padding: 56px 20px 72px;
+    display: flex; flex-direction: column; align-items: center; gap: 26px;
+  }
+
+  /* ---------- Header ---------- */
+  header { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+  .avatar {
+    width: 108px; height: 108px; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--border-hover);
+    box-shadow: 0 0 0 6px rgba(124, 92, 255, 0.10), 0 12px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+  .handle { color: var(--text-dim); font-size: 0.95rem; font-weight: 500; }
+  .bio { color: var(--text-dim); font-size: 0.98rem; max-width: 440px; margin-top: 2px; }
+
+  .socials { display: flex; gap: 12px; margin-top: 6px; flex-wrap: wrap; justify-content: center; }
+  .social {
+    width: 46px; height: 46px; display: grid; place-items: center;
+    border-radius: 14px; background: var(--card); border: 1px solid var(--border); color: var(--text);
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  }
+  .social:hover { transform: translateY(-3px); background: var(--card-hover); border-color: var(--border-hover); }
+  .social svg { width: 22px; height: 22px; }
+
+  /* ---------- Sections ---------- */
+  section { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+  .section-label {
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--text-dim); font-weight: 600; padding-left: 4px;
+  }
+
+  /* ---------- Video card ---------- */
+  .video-card { width: 100%; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--card); }
+  .video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+  .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-meta { padding: 12px 16px; display: flex; align-items: center; gap: 8px; color: var(--text-dim); font-size: 0.85rem; }
+  .video-meta .dot { width: 6px; height: 6px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 8px #ff3b30; flex: 0 0 auto; }
+  .video-meta .vt { color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ---------- App card (logo + screenshot preview) ---------- */
+  .app-card {
+    display: flex; align-items: center; gap: 14px; width: 100%;
+    padding: 14px 16px; border-radius: var(--radius);
+    background: var(--card); border: 1px solid var(--border); color: var(--text); text-decoration: none;
+    transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+  }
+  .app-card:hover { transform: translateY(-2px); background: var(--card-hover); border-color: var(--border-hover); }
+  .app-card .logo { width: 56px; height: 56px; flex: 0 0 56px; border-radius: 13px; object-fit: cover; border: 1px solid var(--border); }
+  .app-card .txt { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .app-card .title { font-weight: 600; font-size: 1.02rem; }
+  .app-card .sub { color: var(--text-dim); font-size: 0.82rem; }
+  .app-card .shot { height: 78px; flex: 0 0 auto; border-radius: 9px; border: 1px solid var(--border); object-fit: cover; box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+
+  /* ---------- Media / banner card (wide preview on top) ---------- */
+  .media-card {
+    display: block; width: 100%; border-radius: var(--radius); overflow: hidden;
+    background: var(--card); border: 1px solid var(--border); color: var(--text); text-decoration: none;
+    transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+  }
+  .media-card:hover { transform: translateY(-2px); background: var(--card-hover); border-color: var(--border-hover); }
+  .media-card .banner { width: 100%; height: 160px; object-fit: cover; display: block; border-bottom: 1px solid var(--border); background: #000; }
+  .media-foot { display: flex; align-items: center; gap: 13px; padding: 14px 16px; }
+  .media-foot .icon { width: 42px; height: 42px; flex: 0 0 42px; border-radius: 11px; display: grid; place-items: center; background: rgba(255,255,255,0.06); }
+  .media-foot .icon svg { width: 22px; height: 22px; }
+  .media-foot .txt { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+  .media-foot .title { font-weight: 600; font-size: 1.02rem; }
+  .media-foot .sub { color: var(--text-dim); font-size: 0.82rem; }
+  .media-foot .chev { margin-left: auto; color: var(--text-dim); }
+  .media-card:hover .media-foot .chev { color: var(--text); }
+
+  /* ---------- Simple link (Buy Me a Coffee) ---------- */
+  .link {
+    display: flex; align-items: center; gap: 14px; width: 100%;
+    padding: 15px 18px; border-radius: var(--radius);
+    background: var(--card); border: 1px solid var(--border); color: var(--text); text-decoration: none;
+    transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+  }
+  .link:hover { transform: translateY(-2px); background: var(--card-hover); border-color: var(--border-hover); }
+  .link .icon { width: 42px; height: 42px; flex: 0 0 42px; border-radius: 11px; display: grid; place-items: center; background: rgba(255,255,255,0.06); }
+  .link .icon svg { width: 24px; height: 24px; }
+  .link .txt { display: flex; flex-direction: column; min-width: 0; }
+  .link .title { font-weight: 600; font-size: 1rem; }
+  .link .sub { color: var(--text-dim); font-size: 0.82rem; }
+  .link .chev { margin-left: auto; color: var(--text-dim); transition: transform 0.16s ease; }
+  .link:hover .chev { transform: translateX(3px); color: var(--text); }
+
+  footer { color: var(--text-dim); font-size: 0.8rem; text-align: center; margin-top: 8px; }
+
+  @media (max-width: 420px) {
+    main { padding-top: 40px; }
+    h1 { font-size: 1.45rem; }
+    .app-card .shot { height: 66px; }
+  }
+</style>
+
+<div class="bg-glow"></div>
+
+<main>
+  <header>
+    <img class="avatar" src="assets/avatar.jpg" alt="Kirill Konovalov" />
+    <h1>Kirill Konovalov</h1>
+    <div class="handle">@kirill_ki_real</div>
+    <p class="bio">Full-time engineer / Part-time storyteller.<br />Building apps, sharing the journey.</p>
+
+    <nav class="socials" aria-label="Social links">
+      <a class="social" href="https://www.instagram.com/konovalov.kirill" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a class="social" href="https://www.tiktok.com/@kirill_ki_real" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.5 3h-3.1v12.4a2.4 2.4 0 1 1-2.4-2.4c.2 0 .4 0 .6.07V9.9a5.6 5.6 0 0 0-.6-.03A5.5 5.5 0 1 0 15.5 15.4V9.16a7.3 7.3 0 0 0 4.3 1.38V7.43a4.28 4.28 0 0 1-3.2-1.6z"/></svg>
+      </a>
+      <a class="social" href="https://www.threads.com/@konovalov.kirill" target="_blank" rel="noopener" aria-label="Threads" title="Threads">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.2 22h-.06C9.1 22 6.9 21 5.4 19.1 4.06 17.4 3.4 15.05 3.35 12.03v-.06C3.4 8.95 4.06 6.6 5.4 4.9 6.9 3 9.1 2 12.14 2h.06c2.32.02 4.25.6 5.74 1.75 1.4 1.08 2.38 2.6 2.93 4.55l-1.94.54c-.9-3.2-3.1-4.83-6.74-4.86-2.4.02-4.2.77-5.36 2.24-1.08 1.37-1.63 3.35-1.67 5.85.04 2.5.6 4.48 1.67 5.85 1.15 1.47 2.97 2.22 5.36 2.24 2.15-.02 3.58-.52 4.77-1.68 1.36-1.32 1.33-2.95 .9-3.95-.26-.6-.72-1.1-1.36-1.47-.16 1.15-.52 2.06-1.1 2.72-.76.9-1.86 1.4-3.25 1.46-1.06.05-2.08-.2-2.86-.7-.92-.6-1.46-1.5-1.52-2.55-.12-2.07 1.53-3.56 4.1-3.7.9-.05 1.75-.02 2.53.1-.1-.63-.32-1.13-.63-1.5-.44-.5-1.11-.76-2-.77h-.03c-.72 0-1.7.2-2.32 1.12l-1.6-1.08c.84-1.24 2.2-1.92 3.92-1.92h.05c2.88.02 4.6 1.78 4.77 4.85.1.04.2.09.3.14 1.4.66 2.42 1.66 2.96 2.9.75 1.73.82 4.55-1.47 6.77-1.55 1.5-3.43 2.18-6.1 2.2zm-1.3-9.4c-.28 0-.57.01-.86.03-1.93.11-2.4.99-2.35 1.6.05.8 .92 1.17 1.76 1.13.77-.04 1.79-.34 1.96-2.67-.16-.05-.33-.06-.5-.09z"/></svg>
+      </a>
+      <a class="social" href="https://www.youtube.com/@kirill_ki_real" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.2-.4-4.7a2.5 2.5 0 0 0-1.77-1.77C19.32 5.1 12 5.1 12 5.1s-7.32 0-8.83.43A2.5 2.5 0 0 0 1.4 7.3C1 8.8 1 12 1 12s0 3.2.4 4.7a2.5 2.5 0 0 0 1.77 1.77C4.68 18.9 12 18.9 12 18.9s7.32 0 8.83-.43a2.5 2.5 0 0 0 1.77-1.77C23 15.2 23 12 23 12zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+      </a>
+      <a class="social" href="https://github.com/Indieg0" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49v-1.7c-2.78.62-3.37-1.22-3.37-1.22-.46-1.18-1.11-1.5-1.11-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.9 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.63-1.38-2.22-.26-4.55-1.14-4.55-5.05 0-1.12.39-2.03 1.03-2.74-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05a9.35 9.35 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.71 1.03 1.62 1.03 2.74 0 3.92-2.34 4.78-4.57 5.03.36.32.68.94.68 1.9v2.82c0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ---------- Latest full video ----------
+       To feature a different video, replace the ID in the iframe src below
+       and update the title in .vt. (ID is the part after v= / youtu.be/ .) -->
+  <section aria-label="Latest video">
+    <div class="section-label">Latest video</div>
+    <div class="video-card">
+      <div class="video-frame">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/KAk7FLRk0vo"
+          title="Latest YouTube video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy"></iframe>
+      </div>
+      <div class="video-meta">
+        <span class="dot"></span>
+        <span class="vt">Ребелія: День із Життя Актора</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Apps ---------- -->
+  <section aria-label="Apps">
+    <div class="section-label">Apps on the App Store</div>
+
+    <a class="app-card" href="https://apps.apple.com/ua/app/speedster-%D0%B0%D0%BD%D1%82%D0%B8%D1%80%D0%B0%D0%B4%D0%B0%D1%80/id1504476115?l=uk" target="_blank" rel="noopener">
+      <img class="logo" src="assets/speedster-icon.jpg" alt="Speedster icon" />
+      <span class="txt">
+        <span class="title">Speedster: антирадар</span>
+        <span class="sub">Radar / speed-cam detector · App Store</span>
+      </span>
+      <img class="shot" src="assets/speedster-shot.png" alt="Speedster screenshot" />
+    </a>
+
+    <a class="app-card" href="https://apps.apple.com/ua/app/vinylover-collection-tracker/id6477580879?l=uk" target="_blank" rel="noopener">
+      <img class="logo" src="assets/vinylover-icon.jpg" alt="vinylover icon" />
+      <span class="txt">
+        <span class="title">vinylover</span>
+        <span class="sub">Vinyl collection tracker · App Store</span>
+      </span>
+      <img class="shot" src="assets/vinylover-shot.png" alt="vinylover screenshot" />
+    </a>
+  </section>
+
+  <!-- ---------- Open source ---------- -->
+  <section aria-label="Open source">
+    <div class="section-label">Open source</div>
+
+    <a class="media-card" href="https://github.com/Indieg0/ytdownload" target="_blank" rel="noopener">
+      <img class="banner" src="assets/ytdownload.png" alt="ytdownload repository preview" />
+      <div class="media-foot">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49v-1.7c-2.78.62-3.37-1.22-3.37-1.22-.46-1.18-1.11-1.5-1.11-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.9 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.63-1.38-2.22-.26-4.55-1.14-4.55-5.05 0-1.12.39-2.03 1.03-2.74-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05a9.35 9.35 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.71 1.03 1.62 1.03 2.74 0 3.92-2.34 4.78-4.57 5.03.36.32.68.94.68 1.9v2.82c0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg>
+        </span>
+        <span class="txt">
+          <span class="title">ytdownload</span>
+          <span class="sub">Download YouTube video / audio in best quality · GitHub</span>
+        </span>
+        <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      </div>
+    </a>
+  </section>
+
+  <!-- ---------- Support / Shop ---------- -->
+  <section aria-label="Support">
+    <div class="section-label">Support &amp; shop</div>
+
+    <a class="media-card" href="https://kireal.gumroad.com/l/palettewallpapers" target="_blank" rel="noopener">
+      <img class="banner" src="assets/wallpapers.png" alt="Palette Wallpapers preview" />
+      <div class="media-foot">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
+        </span>
+        <span class="txt">
+          <span class="title">Palette Wallpapers</span>
+          <span class="sub">Buy the wallpaper pack · Gumroad</span>
+        </span>
+        <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      </div>
+    </a>
+
+    <a class="link" href="https://buymeacoffee.com/hypedpriest" target="_blank" rel="noopener">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h11v5a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5V8z"/><path d="M16 9h2.5a2.5 2.5 0 0 1 0 5H16"/><path d="M7 3.5c0 .8.6 1 .6 1.8M10.5 3.5c0 .8.6 1 .6 1.8M13.5 4c0 .6.4.8.4 1.3"/></svg>
+      </span>
+      <span class="txt">
+        <span class="title">Buy Me a Coffee</span>
+        <span class="sub">Support my work ☕</span>
+      </span>
+      <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+    </a>
+  </section>
+
+  <footer>© <span id="year"></span> Kirill Konovalov</footer>
+</main>
+
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
