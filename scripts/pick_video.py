@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 """Feature the newest channel upload longer than MIN_SECONDS in index.html.
 
-Durations are not in the RSS feed, so each candidate's length is resolved via
-YouTube's innertube `player` JSON endpoint. That endpoint is used in preference
-to scraping the watch page: from datacenter IPs (like GitHub's runners) YouTube
-serves a consent/bot interstitial that contains no `lengthSeconds`.
+Durations are not in the RSS feed, so they must be resolved per video.
 
-If not a single duration can be resolved, the script exits non-zero rather than
-quietly leaving the page stale.
+Two sources, in order:
+  1. YouTube Data API v3, if YOUTUBE_API_KEY is set. One request covers every
+     candidate. This is the only source that works from a datacenter IP.
+  2. Scraping the watch page. Works from an ordinary residential IP, but from
+     CI runners YouTube serves a "Sign in to confirm you're not a bot"
+     interstitial that contains no duration.
+
+The key is read from the environment — never hardcoded. If not a single
+duration can be resolved, the script exits non-zero rather than quietly
+leaving the page stale.
 """
 import html as htmllib
 import json
+import os
 import pathlib
 import re
 import sys
@@ -20,8 +26,6 @@ CHANNEL_ID = "UCsI3yL_FWMJxbvaXCWQvjLQ"
 MIN_SECONDS = 180          # "more than 3 minutes"
 MAX_CHECK = 12             # only inspect the newest N feed entries
 
-INNERTUBE_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"  # public web client key
-INNERTUBE_CLIENT = {"clientName": "WEB", "clientVersion": "2.20240101.00.00", "hl": "en"}
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/122 Safari/537.36")
 
@@ -29,44 +33,38 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 INDEX = ROOT / "index.html"
 
 
-def _open(req):
-    return urllib.request.urlopen(req, timeout=30).read()
-
-
 def get_text(url):
     req = urllib.request.Request(
         url, headers={"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"})
-    return _open(req).decode("utf-8", "replace")
+    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
-def duration_via_innertube(vid):
-    body = json.dumps({"videoId": vid, "context": {"client": INNERTUBE_CLIENT}}).encode()
-    req = urllib.request.Request(
-        f"https://www.youtube.com/youtubei/v1/player?key={INNERTUBE_KEY}",
-        data=body,
-        headers={"Content-Type": "application/json", "User-Agent": UA})
-    data = json.loads(_open(req))
-    secs = (data.get("videoDetails") or {}).get("lengthSeconds")
-    return int(secs) if secs else None
+def iso8601_to_seconds(s):
+    """PT1H2M3S -> 3723"""
+    m = re.fullmatch(r"P(?:\d+D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", s or "")
+    if not m:
+        return None
+    h, mi, sec = (int(g or 0) for g in m.groups())
+    return h * 3600 + mi * 60 + sec
+
+
+def durations_via_data_api(vids, key):
+    """One request -> {videoId: seconds}. Requires a YouTube Data API v3 key."""
+    url = ("https://www.googleapis.com/youtube/v3/videos"
+           f"?part=contentDetails&id={','.join(vids)}&key={key}")
+    data = json.loads(get_text(url))
+    out = {}
+    for item in data.get("items", []):
+        secs = iso8601_to_seconds(item["contentDetails"].get("duration"))
+        if secs:
+            out[item["id"]] = secs
+    return out
 
 
 def duration_via_watch_page(vid):
     m = re.search(r'"lengthSeconds":"(\d+)"',
                   get_text(f"https://www.youtube.com/watch?v={vid}"))
     return int(m.group(1)) if m else None
-
-
-def duration(vid):
-    """Resolve a video's length in seconds, trying the JSON API then the page."""
-    for name, fn in (("innertube", duration_via_innertube),
-                     ("watch-page", duration_via_watch_page)):
-        try:
-            secs = fn(vid)
-            if secs:
-                return secs
-        except Exception as ex:
-            print(f"  {vid}: {name} failed: {ex}", file=sys.stderr)
-    return None
 
 
 def update_index(vid, title):
@@ -90,25 +88,42 @@ def main():
     if not entries:
         sys.exit("ERROR: channel feed returned no entries.")
 
-    resolved = 0
-    for entry in entries:
-        vid = re.search(r"<yt:videoId>([^<]+)", entry).group(1)
-        title = htmllib.unescape(re.search(r"<title>([^<]+)", entry).group(1))
-        secs = duration(vid)
+    candidates = [(re.search(r"<yt:videoId>([^<]+)", e).group(1),
+                   htmllib.unescape(re.search(r"<title>([^<]+)", e).group(1)))
+                  for e in entries]
+
+    key = os.environ.get("YOUTUBE_API_KEY", "").strip()
+    lengths = {}
+    if key:
+        try:
+            lengths = durations_via_data_api([v for v, _ in candidates], key)
+            print(f"Resolved {len(lengths)} durations via YouTube Data API.", file=sys.stderr)
+        except Exception as ex:
+            print(f"Data API failed ({ex}); falling back to watch pages.", file=sys.stderr)
+    else:
+        print("No YOUTUBE_API_KEY set; falling back to watch pages.", file=sys.stderr)
+
+    for vid, title in candidates:
+        secs = lengths.get(vid)
+        if secs is None:
+            try:
+                secs = duration_via_watch_page(vid)
+            except Exception as ex:
+                print(f"  {vid}: watch page failed: {ex}", file=sys.stderr)
         if secs is None:
             print(f"{vid}  duration unknown  {title}", file=sys.stderr)
             continue
-        resolved += 1
+        lengths[vid] = secs
         print(f"{vid}  {secs:>5}s  {title}", file=sys.stderr)
         if secs > MIN_SECONDS:
             update_index(vid, title)
             return
 
-    # Distinguish "everything is short" from "we couldn't read any durations".
-    if resolved == 0:
-        sys.exit("ERROR: could not resolve the duration of any video — "
+    if not lengths:
+        sys.exit("ERROR: could not resolve the duration of any video "
+                 "(set YOUTUBE_API_KEY when running from CI) — "
                  "refusing to leave the page silently stale.")
-    print(f"No video over {MIN_SECONDS}s among the {resolved} checked; "
+    print(f"No video over {MIN_SECONDS}s among the {len(lengths)} checked; "
           "index.html left unchanged.", file=sys.stderr)
 
 

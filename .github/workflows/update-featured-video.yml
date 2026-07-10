@@ -1,10 +1,15 @@
 name: Update featured video
 
 # Keeps the featured video on the landing page pointed at the newest upload
-# longer than 3 minutes. Runs on a schedule and can be triggered manually.
+# longer than 3 minutes.
+#
+# The scheduled trigger is commented out until a YOUTUBE_API_KEY secret exists:
+# from GitHub's datacenter IPs, YouTube answers every unauthenticated request
+# with "Sign in to confirm you're not a bot", so the job cannot read durations
+# and would fail on every run. Re-enable the cron once the secret is set.
 on:
-  schedule:
-    - cron: "0 */6 * * *"   # every 6 hours
+  # schedule:
+  #   - cron: "0 */6 * * *"   # every 6 hours
   workflow_dispatch:
 
 permissions:
@@ -25,6 +30,8 @@ jobs:
           python-version: "3.12"
 
       - name: Pick latest long-form video
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python3 scripts/pick_video.py
 
       - name: Commit if changed
