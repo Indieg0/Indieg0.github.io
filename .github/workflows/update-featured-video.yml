@@ -1,12 +1,13 @@
-name: Update featured video
+name: Update site content
 
-# Keeps the featured video on the landing page pointed at the newest upload
-# longer than 3 minutes.
+# Keeps the landing page fresh on a schedule:
+#   * featured video -> newest upload longer than 3 minutes
+#   * cover / preview images -> latest from App Store, Gumroad, GitHub
 #
-# Durations come from the YouTube Data API (YOUTUBE_API_KEY secret). An
-# unauthenticated source is not viable here: from GitHub's datacenter IPs
-# YouTube answers every anonymous request with "Sign in to confirm you're not
-# a bot", which yields no duration. The job fails loudly if none resolve.
+# Video durations come from the YouTube Data API (YOUTUBE_API_KEY secret): from
+# GitHub's datacenter IPs anonymous YouTube requests hit "Sign in to confirm
+# you're not a bot". The image sources have no such gate. Each script fails
+# loudly if it can resolve nothing, and the page stays fully static.
 on:
   schedule:
     - cron: "0 */6 * * *"   # every 6 hours
@@ -16,7 +17,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: update-featured-video
+  group: update-site-content
   cancel-in-progress: false
 
 jobs:
@@ -34,14 +35,17 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python3 scripts/pick_video.py
 
+      - name: Refresh cover / preview images
+        run: python3 scripts/refresh_assets.py
+
       - name: Commit if changed
         run: |
-          if [ -n "$(git status --porcelain index.html)" ]; then
+          if [ -n "$(git status --porcelain index.html assets)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add index.html
-            git commit -m "Update featured video (latest > 3 min)"
+            git add index.html assets
+            git commit -m "Update site content (featured video + covers)"
             git push
           else
-            echo "No change to featured video."
+            echo "No content changes."
           fi
