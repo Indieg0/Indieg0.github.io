@@ -10,7 +10,7 @@ name: Update site content
 # loudly if it can resolve nothing, and the page stays fully static.
 on:
   schedule:
-    - cron: "0 */6 * * *"   # every 6 hours
+    - cron: "0 */2 * * *"   # every 2 hours
   workflow_dispatch:
 
 permissions:
