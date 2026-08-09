@@ -22,6 +22,7 @@ import json
 import pathlib
 import re
 import sys
+import time
 import urllib.request
 
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
@@ -46,10 +47,20 @@ manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {}
 resolved, failed, wrote = 0, 0, 0
 
 
-def fetch(url):
+def fetch(url, attempts=3, backoff=20):
+    """GET with retries — sources occasionally 404/5xx transiently, and one
+    blip shouldn't fail a scheduled run."""
     req = urllib.request.Request(
         url, headers={"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"})
-    return urllib.request.urlopen(req, timeout=30).read()
+    for attempt in range(1, attempts + 1):
+        try:
+            return urllib.request.urlopen(req, timeout=30).read()
+        except Exception as ex:
+            if attempt == attempts:
+                raise
+            print(f"fetch attempt {attempt}/{attempts} failed ({ex}); "
+                  f"retrying in {backoff}s", file=sys.stderr)
+            time.sleep(backoff)
 
 
 def by_url(name, url):

@@ -20,6 +20,7 @@ import os
 import pathlib
 import re
 import sys
+import time
 import urllib.request
 
 CHANNEL_ID = "UCsI3yL_FWMJxbvaXCWQvjLQ"
@@ -33,10 +34,21 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 INDEX = ROOT / "index.html"
 
 
-def get_text(url):
+def get_text(url, attempts=3, backoff=20):
+    """GET with retries: YouTube's feed occasionally 404s/5xxs transiently,
+    and one blip shouldn't fail (and email about) a scheduled run."""
     req = urllib.request.Request(
         url, headers={"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    for attempt in range(1, attempts + 1):
+        try:
+            return (urllib.request.urlopen(req, timeout=30)
+                    .read().decode("utf-8", "replace"))
+        except Exception as ex:
+            if attempt == attempts:
+                raise
+            print(f"fetch attempt {attempt}/{attempts} failed ({ex}); "
+                  f"retrying in {backoff}s", file=sys.stderr)
+            time.sleep(backoff)
 
 
 def iso8601_to_seconds(s):
